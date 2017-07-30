@@ -1,0 +1,45 @@
+import urllib.request
+from bs4 import BeautifulSoup
+import re
+def get_indian_states_Temperature():
+    values=[i for i in range(100,900)]
+    for dyn_url in values:
+        print("**********************************************************")
+        url='https://weather.com/en-IN/weather/today/l/INXX0'+str(dyn_url)+':1:IN'
+        raw_html=urllib.request.urlopen(url)
+        data=raw_html.read()
+        data1=str(data)
+
+        soup=BeautifulSoup(data1,'html.parser')
+        beautify=soup.prettify()
+
+        name=soup.find("h1",attrs={"class":"h4 today_nowcard-location"})
+        print(name.text)
+
+        time=soup.find("p",attrs={"class":"today_nowcard-timestamp"})
+        print(time.text)
+
+        temp_container=soup.find("div",attrs={"class":"today_nowcard-temp"})
+        for temp in temp_container:
+            new_temp = temp.text
+            print(new_temp[0:3],'degrees')
+
+        wind=re.findall(r'\w[?\w+]\s\d[?\d+]\skm/h',data1)
+        humidity=re.findall(r'\d+[?\d\d\d]%',data1)
+        pressure=re.findall(r'\d+?\.?[\d|\d+]\smb',data1)
+        visiblilty=re.findall(r'[?\d|\d\d]\.\d?\d+\skm',data1)
+        print('wind speed is - ',wind[0])
+        print('humidity is - ',humidity[0])
+        print('pressure is - ',pressure[0])
+        print('visibility is - ',visiblilty[0])
+        print("*********************************************************")
+
+if __name__ == '__main__':
+    get_indian_states_Temperature()
+
+
+
+
+
+
+
